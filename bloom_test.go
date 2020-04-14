@@ -6,17 +6,11 @@ import (
 
 	"encoding/binary"
 
-	"github.com/bculberson/bloom"
 	"github.com/garyburd/redigo/redis"
+	"github.com/hhq163/bloom"
 )
 
 func TestRedisBloomFilter(t *testing.T) {
-	// s, err := miniredis.Run()
-	// if err != nil {
-	// 	t.Error("Miniredis could not start")
-	// }
-	// defer s.Close()
-
 	pool := &redis.Pool{
 		MaxIdle:     3,
 		IdleTimeout: 240 * time.Second,

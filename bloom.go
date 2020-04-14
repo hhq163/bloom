@@ -22,7 +22,7 @@ func New(m uint, k uint, bitSet BitSetProvider) *BloomFilter {
 
 func EstimateParameters(n uint, p float64) (uint, uint) {
 	m := math.Ceil(float64(n) * math.Log(p) / math.Log(1.0/math.Pow(2.0, math.Ln2)))
-	k := math.Ln2*m/float64(n) + 0.5
+	k := math.Ln2*m/float64(n) + 0.5 //hash函数个数
 
 	return uint(m), uint(k)
 }
