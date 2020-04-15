@@ -14,16 +14,16 @@ var numCount = 20000
 
 func main() {
 
-	// pool := &redis.Pool{
-	// 	MaxIdle:     3,
-	// 	IdleTimeout: 240 * time.Second,
-	// 	Dial:        func() (redis.Conn, error) { return redis.Dial("tcp", "127.0.0.1:6379") },
-	// }
 	client := redis.NewClient(&redis.Options{
-		Addr:     "127.0.0.1",
+		Addr:     "127.0.0.1:6379",
 		DB:       0,
 		PoolSize: 100,
 	})
+	res, e := client.Set("test1", "good job", 0).Result()
+	if e != nil {
+		fmt.Println("Set failed")
+	}
+	fmt.Println("res=", res)
 
 	m, k := bloom.EstimateParameters(10000000, .001) //存储10000000个key，错误率0.1%,返回的k是hash函数个数，m为位图长度
 	bitSet := bloom.NewRedisBitSet("users", m, client)
@@ -31,17 +31,20 @@ func main() {
 
 	// m, k := bloom.EstimateParameters(10000000, .001)
 	// b := bloom.New(m, k, bloom.NewBitSet(m))
-
+	astart := time.Now()
 	for i := 1; i <= 10000000; i++ {
 		name := fmt.Sprintf("username_%d", i)
 		b.Add([]byte(name))
 	}
+	acost := time.Since(astart).Seconds()
+	fmt.Println("finish add cost", acost, "s")
+
 	nums := []int{}
 	for i := 0; i < numCount; i++ {
 		nums = append(nums, RandInt(1, 10000000))
 	}
 	var wg sync.WaitGroup
-	qch, ch := make(chan struct{}), make(chan int, 200)
+	qch, ch := make(chan struct{}), make(chan int, 2000)
 	count := 0
 
 	go func() {
@@ -57,12 +60,12 @@ func main() {
 			defer wg.Done()
 			start := time.Now()
 			name := fmt.Sprintf("username_%d", nums[i])
-			_, err := b.Exists([]byte(name))
+			exists, err := b.Exists([]byte(name))
 			if err != nil {
 				fmt.Println("Exists error:", err.Error())
 			}
 			cost := time.Since(start).Nanoseconds()
-			//fmt.Println("result is ", exists, ", cost=", cost, " ns")
+			fmt.Println("result is ", exists, ", cost=", cost, " ns")
 			ch <- int(cost)
 		}(i)
 	}
