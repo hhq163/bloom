@@ -34,7 +34,13 @@ func main() {
 	astart := time.Now()
 	for i := 1; i <= 10000000; i++ {
 		name := fmt.Sprintf("username_%d", i)
-		b.Add([]byte(name))
+		err := b.Add([]byte(name))
+		if err != nil {
+			fmt.Println("b.Add failed, name=", name)
+		}
+		if i%100 == 0 {
+			fmt.Println(i)
+		}
 	}
 	acost := time.Since(astart).Seconds()
 	fmt.Println("finish add cost", acost, "s")

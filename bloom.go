@@ -1,6 +1,7 @@
 package bloom
 
 import (
+	"fmt"
 	"hash/fnv"
 	"math"
 )
@@ -31,6 +32,7 @@ func (f *BloomFilter) Add(data []byte) error {
 	locations := f.getLocations(data)
 	err := f.bitSet.Set(locations)
 	if err != nil {
+		fmt.Println("err=", err.Error())
 		return err
 	}
 	return nil
