@@ -53,12 +53,12 @@ func main() {
 			defer wg.Done()
 			start := time.Now()
 			name := fmt.Sprintf("username_%d", nums[i])
-			exists, err := b.Exists([]byte(name))
+			_, err := b.Exists([]byte(name))
 			if err != nil {
 				fmt.Println("Exists error:", err.Error())
 			}
 			cost := time.Since(start).Nanoseconds()
-			fmt.Println("result is ", exists, ", cost=", cost, " ns")
+			//fmt.Println("result is ", exists, ", cost=", cost, " ns")
 			ch <- int(cost)
 		}(i)
 	}
