@@ -14,7 +14,7 @@ func TestRedisBloomFilter(t *testing.T) {
 	pool := &redis.Pool{
 		MaxIdle:     3,
 		IdleTimeout: 240 * time.Second,
-		Dial:        func() (redis.Conn, error) { return redis.Dial("tcp", s.Addr()) },
+		Dial:        func() (redis.Conn, error) { return redis.Dial("tcp", "127.0.0.1:6379") },
 	}
 	conn := pool.Get()
 	defer conn.Close()
