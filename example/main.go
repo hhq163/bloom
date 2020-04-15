@@ -32,7 +32,7 @@ func main() {
 	// m, k := bloom.EstimateParameters(10000000, .001)
 	// b := bloom.New(m, k, bloom.NewBitSet(m))
 	astart := time.Now()
-	for i := 1; i <= 10000000; i++ {
+	for i := 1; i <= 100000; i++ {
 		name := fmt.Sprintf("username_%d", i)
 		err := b.Add([]byte(name))
 		if err != nil {
