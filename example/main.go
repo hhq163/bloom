@@ -19,14 +19,14 @@ func main() {
 	// 	IdleTimeout: 240 * time.Second,
 	// 	Dial:        func() (redis.Conn, error) { return redis.Dial("tcp", "127.0.0.1:6379") },
 	// }
-	redisGame := redis.NewClient(&redis.Options{
+	client := redis.NewClient(&redis.Options{
 		Addr:     "127.0.0.1",
 		DB:       0,
 		PoolSize: 100,
 	})
 
 	m, k := bloom.EstimateParameters(10000000, .001) //存储10000000个key，错误率0.1%,返回的k是hash函数个数，m为位图长度
-	bitSet := bloom.NewRedisBitSet("users", m, conn)
+	bitSet := bloom.NewRedisBitSet("users", m, client)
 	b := bloom.New(m, k, bitSet)
 
 	// m, k := bloom.EstimateParameters(10000000, .001)
